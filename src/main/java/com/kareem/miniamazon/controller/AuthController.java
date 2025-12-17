@@ -18,7 +18,6 @@ import tools.jackson.databind.json.JsonMapper;
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;
-    private final JsonMapper.Builder builder;
 
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<AuthResponse>> register(@RequestBody RegisterRequest request) {
