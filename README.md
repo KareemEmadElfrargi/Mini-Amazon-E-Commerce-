@@ -59,7 +59,7 @@ The project follows a **Layered Architecture** to ensure separation of concerns:
 
 1.  **Clone the repository:**
     ```bash
-    git clone [https://github.com/YourUsername/mini-amazon-api.git](https://github.com/KareemEmadElfrargi/mini-amazon-api.git)
+    git clone https://github.com/KareemEmadElfrargi/Mini-Amazon-E-Commerce-.git
     cd mini-amazon-api
     ```
 
