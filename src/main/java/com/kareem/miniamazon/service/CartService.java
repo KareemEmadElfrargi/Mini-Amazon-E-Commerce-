@@ -15,6 +15,7 @@ import com.kareem.miniamazon.repository.ProductRepository;
 import com.kareem.miniamazon.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -75,6 +76,34 @@ public class CartService {
 
         return mapToDTO(cart);
     }
+
+    @Transactional
+    public CartDTO getCart(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        Cart cart = cartRepository.findByUserId(user.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Cart not found"));
+
+        cart.reCalculateTotal(); // ensure fresh calculation
+        return mapToDTO(cart);
+    }
+
+    @Transactional
+    public CartDTO removeFromCart(String email, Long cartItemId) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        Cart cart = cartRepository.findByUserId(user.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Cart not found"));
+        CartItem itemToDelete = cart.getItems().stream()
+                .filter(item -> item.getId().equals(cartItemId))
+                .findFirst().orElseThrow(() -> new ResourceNotFoundException("Item not found"));
+
+        cart.removeItem(itemToDelete);
+        cartItemRepository.delete(itemToDelete);
+        cartRepository.save(cart);
+        return mapToDTO(cart);
+    }
+
 
 
     private CartDTO mapToDTO(Cart cart) {
