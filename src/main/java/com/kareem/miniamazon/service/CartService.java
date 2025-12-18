@@ -103,7 +103,16 @@ public class CartService {
         cartRepository.save(cart);
         return mapToDTO(cart);
     }
+    @Transactional
+    public void clearCart(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        Cart cart = cartRepository.findByUserId(user.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Cart not found"));
 
+        cart.clearItems();
+        cartRepository.save(cart);
+    }
 
 
     private CartDTO mapToDTO(Cart cart) {
